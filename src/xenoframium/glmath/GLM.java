@@ -1,15 +1,11 @@
 package xenoframium.glmath;
 
-import xenoframium.glmath.linearalgebra.Line3f;
-import xenoframium.glmath.linearalgebra.Matrix4;
-import xenoframium.glmath.linearalgebra.Plane;
-import xenoframium.glmath.linearalgebra.Triangle;
-import xenoframium.glmath.linearalgebra.Vector3;
+import xenoframium.glmath.linearalgebra.*;
 
 public final class GLM {
 	public static float epsilon = 1e-5f;
 	
-	public static Vector3 findLinePlaneIntersection(Line3f line, Plane plane) {
+	public static Vec3 findLinePlaneIntersection(Line3 line, Plane plane) {
 		float a = plane.n.x;
 		float b = plane.n.y;
 		float c = plane.n.z;
@@ -19,26 +15,26 @@ public final class GLM {
 		return line.getPointAtT(rhs / lhs);
 	}
 
-	public static Line3f lineFromPoints(Vector3 point1, Vector3 point2) {
-		return new Line3f(point1, point1.subtract(point2));
+	public static Line3 lineFromPoints(Vec3 point1, Vec3 point2) {
+		return new Line3(point1, point1.subt(point2));
 	}
 
 	public static Plane planeFromTriangle(Triangle triangle) {
-		Vector3 normal = triangle.b.subtract(triangle.a).cross(triangle.c.subtract(triangle.b));
+		Vec3 normal = triangle.b.subt(triangle.a).cross(triangle.c.subt(triangle.b));
 		return new Plane(normal, triangle.a);
 	}
 
-	public static boolean isPointInTriangle(Triangle triangle, Vector3 point) {
-		Vector3 v0 = triangle.b.subtract(triangle.a);
-		Vector3 v1 = triangle.c.subtract(triangle.a);
-		Vector3 v2 = point.subtract(triangle.a);
+	public static boolean isPointInTriangle(Triangle triangle, Vec3 point) {
+		Vec3 v0 = triangle.b.subt(triangle.a);
+		Vec3 v1 = triangle.c.subt(triangle.a);
+		Vec3 v2 = point.subt(triangle.a);
 
 		if (v2.dot(v0.cross(v1)) > epsilon) {
 			return false;
 		}
 
-		float v0mag = v0.magnitudeSquared();
-		float v1mag = v1.magnitudeSquared();
+		float v0mag = v0.magSq();
+		float v1mag = v1.magSq();
 		
 		float d01 = v0.dot(v1);
 		float d20 = v2.dot(v0);
@@ -52,12 +48,12 @@ public final class GLM {
 		return u >= 0 && v >= 0 && u + v <= 1;
 	}
 	
-	public static boolean doesLineIntersectTriangle(Line3f line, Triangle triangle) {
+	public static boolean doesLineIntersectTriangle(Line3 line, Triangle triangle) {
 		return isPointInTriangle(triangle, findLinePlaneIntersection(line, planeFromTriangle(triangle)));
 	}
 	
-	public static Matrix4 perspective(float fov, float aspect, float near, float far) {
-		Matrix4 perspectiveMatrix = new Matrix4();
+	public static Mat4 perspective(float fov, float aspect, float near, float far) {
+		Mat4 perspectiveMatrix = new Mat4();
 
 		float angle = (float) Math.toRadians(fov);
 		float f = (float) (1 / Math.tan(angle * 0.5));
@@ -71,8 +67,8 @@ public final class GLM {
 		return perspectiveMatrix;
 	}
 	
-	public static Matrix4 ortho(float width, float height, float near, float far) {
-		Matrix4 orthographicMatrix = new Matrix4();
+	public static Mat4 ortho(float width, float height, float near, float far) {
+		Mat4 orthographicMatrix = new Mat4();
 
 		float right = width / 2;
 		float top = height / 2;
@@ -85,13 +81,13 @@ public final class GLM {
 		return orthographicMatrix;
 	}
 
-	public static Matrix4 cameraLookAt(Vector3 cameraPos, Vector3 viewTarget, Vector3 up) {
-		Vector3 viewDirection = new Vector3(viewTarget).subtract(cameraPos).normalize();
-		Vector3 upDirection = new Vector3(up).normalize();
-		Vector3 rightDirection = new Vector3(viewDirection).cross(upDirection).normalize();
-		upDirection = new Vector3(rightDirection).cross(viewDirection);
+	public static Mat4 cameraLookAt(Vec3 cameraPos, Vec3 viewTarget, Vec3 up) {
+		Vec3 viewDirection = new Vec3(viewTarget).subt(cameraPos).normalize();
+		Vec3 upDirection = new Vec3(up).normalize();
+		Vec3 rightDirection = new Vec3(viewDirection).cross(upDirection).normalize();
+		upDirection = new Vec3(rightDirection).cross(viewDirection);
 
-		Matrix4 viewMatrix = new Matrix4();
+		Mat4 viewMatrix = new Mat4();
 
 		viewMatrix.m[0][0] = rightDirection.x;
 		viewMatrix.m[0][1] = upDirection.x;
@@ -110,5 +106,50 @@ public final class GLM {
 		viewMatrix.m[3][2] = viewDirection.dot(cameraPos);
 
 		return viewMatrix;
+	}
+
+	public static Mat2 mult(Mat2... mats) {
+		Mat2 res = new Mat2();
+		res.mult(mats);
+		return res;
+	}
+
+	public static Mat3 mult(Mat3... mats) {
+		Mat3 res = new Mat3();
+		res.mult(mats);
+		return res;
+	}
+
+	public static Mat4 mult(Mat4... mats) {
+		Mat4 res = new Mat4();
+		res.mult(mats);
+		return res;
+	}
+
+	public static Mat2 sum(Mat2... mats) {
+		Mat2 res = new Mat2();
+		res.m[0][0] = 0;
+		res.m[1][1] = 0;
+		res.add(mats);
+		return res;
+	}
+
+	public static Mat3 sum(Mat3... mats) {
+		Mat3 res = new Mat3();
+		res.m[0][0] = 0;
+		res.m[1][1] = 0;
+		res.m[2][2] = 0;
+		res.add(mats);
+		return res;
+	}
+
+	public static Mat4 sum(Mat4... mats) {
+		Mat4 res = new Mat4();
+		res.m[0][0] = 0;
+		res.m[1][1] = 0;
+		res.m[2][2] = 0;
+		res.m[3][3] = 0;
+		res.add(mats);
+		return res;
 	}
 }

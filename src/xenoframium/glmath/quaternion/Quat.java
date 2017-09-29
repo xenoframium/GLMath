@@ -1,33 +1,33 @@
 package xenoframium.glmath.quaternion;
 
-import xenoframium.glmath.linearalgebra.Matrix4;
-import xenoframium.glmath.linearalgebra.Vector3;
+import xenoframium.glmath.linearalgebra.Mat4;
+import xenoframium.glmath.linearalgebra.Vec3;
 
-public class Quaternion {
+public class Quat {
 
 	public float w = 1;
 	public float x = 0;
 	public float y = 0;
 	public float z = 0;
 
-	public Quaternion() {
+	public Quat() {
 	}
 
-	public Quaternion(Quaternion quat) {
+	public Quat(Quat quat) {
 		w = quat.w;
 		x = quat.x;
 		y = quat.y;
 		z = quat.z;
 	}
 	
-	public Quaternion(float w, float x, float y, float z) {
+	public Quat(float w, float x, float y, float z) {
 		this.w = w;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public Quaternion(Vector3 vec, float radians) {
+	public Quat(Vec3 vec, float radians) {
 		float m = (float) Math.sin(radians * 0.5);
 		this.w = (float) Math.cos(radians * 0.5);
 		this.x = m * vec.x;
@@ -35,29 +35,29 @@ public class Quaternion {
 		this.z = m * vec.z;
 	}
 
-	public float magnitudeSquared() {
+	public float magSq() {
 		return w * w + x * x + y * y + z * z;
 	}
 	
-	public float magnitude() {
+	public float mag() {
 		return (float) Math.sqrt(w * w + x * x + y * y + z * z);
 	}
 	
-	public Quaternion multiply(float scalar) {
-		return new Quaternion(w * scalar, x * scalar, y * scalar, z * scalar);
+	public Quat mult(float scalar) {
+		return new Quat(w * scalar, x * scalar, y * scalar, z * scalar);
 	}
 
-	public Quaternion normalize() {
-		return multiply(1 / this.magnitude());
+	public Quat normalize() {
+		return mult(1 / this.mag());
 	}
 
-	public Quaternion conjugate() {
-		return new Quaternion(w, -x, -y, -z);
+	public Quat conj() {
+		return new Quat(w, -x, -y, -z);
 	}
 
-	public Matrix4 toRotationMatrix() {
-		Matrix4 res = new Matrix4();
-		Quaternion t = this.normalize();
+	public Mat4 toRotMat() {
+		Mat4 res = new Mat4();
+		Quat t = this.normalize();
 
 		float r = t.w, i = t.x, j = t.y, k = t.z;
 
