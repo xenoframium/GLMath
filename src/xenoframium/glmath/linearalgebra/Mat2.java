@@ -1,6 +1,7 @@
 package xenoframium.glmath.linearalgebra;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 
 import xenoframium.glmath.util.GLMUtil;
 
@@ -8,7 +9,6 @@ public class Mat2 {
 
 	private static final float[][] identity = { { 1, 0 }, { 0, 1 } };
 
-	private FloatBuffer buffer = GLMUtil.createDirectFloatBuffer(4);
 	public float[][] m;
 
 	public Mat2() {
@@ -85,5 +85,20 @@ public class Mat2 {
 			}
 		}
 		return res;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Mat2 mat2 = (Mat2) o;
+
+		return Arrays.deepEquals(m, mat2.m);
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.deepHashCode(m);
 	}
 }

@@ -20,4 +20,22 @@ public class Plane {
 		Vec4 newR = transformationMatrix.mult(new Vec4(r0.x, r0.y, r0.z, 1));
 		return new Plane(new Vec3(newN.x, newN.y, newN.z), new Vec3(newR.x, newR.y, newR.z));
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Plane plane = (Plane) o;
+
+		if (n != null ? !n.equals(plane.n) : plane.n != null) return false;
+		return r0 != null ? r0.equals(plane.r0) : plane.r0 == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = n != null ? n.hashCode() : 0;
+		result = 31 * result + (r0 != null ? r0.hashCode() : 0);
+		return result;
+	}
 }

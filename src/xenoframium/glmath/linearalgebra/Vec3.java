@@ -5,8 +5,6 @@ import java.nio.FloatBuffer;
 import xenoframium.glmath.util.GLMUtil;
 
 public class Vec3 {
-
-	private FloatBuffer buffer = GLMUtil.createDirectFloatBuffer(3);
 	public float x;
 	public float y;
 	public float z;
@@ -18,6 +16,12 @@ public class Vec3 {
 	}
 	
 	public Vec3(Vec3 vec) {
+		this.x = vec.x;
+		this.y = vec.y;
+		this.z = vec.z;
+	}
+
+	public Vec3(Vec4 vec) {
 		this.x = vec.x;
 		this.y = vec.y;
 		this.z = vec.z;
@@ -85,7 +89,27 @@ public class Vec3 {
 		z *= inverseDenom;
 		return this;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Vec3 vec3 = (Vec3) o;
+
+		if (Float.compare(vec3.x, x) != 0) return false;
+		if (Float.compare(vec3.y, y) != 0) return false;
+		return Float.compare(vec3.z, z) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+		result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+		result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+		return result;
+	}
+
 	public Vec3 normalize() {
 		return div(mag());
 	}

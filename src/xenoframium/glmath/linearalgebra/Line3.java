@@ -20,7 +20,25 @@ public class Line3 {
 		Vec4 newA = transformationMatrix.mult(new Vec4(a.x, a.y, a.z, 0));
 		return new Line3(new Vec3(newR.x, newR.y, newR.z), new Vec3(newA.x, newA.y, newA.z));
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Line3 line3 = (Line3) o;
+
+		if (r0 != null ? !r0.equals(line3.r0) : line3.r0 != null) return false;
+		return a != null ? a.equals(line3.a) : line3.a == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = r0 != null ? r0.hashCode() : 0;
+		result = 31 * result + (a != null ? a.hashCode() : 0);
+		return result;
+	}
+
 	public Vec3 getPointAtT(float t) {
 		return r0.add(a.mult(t));
 	}

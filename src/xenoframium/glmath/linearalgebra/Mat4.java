@@ -1,6 +1,7 @@
 package xenoframium.glmath.linearalgebra;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 
 import xenoframium.glmath.quaternion.Quat;
 import xenoframium.glmath.util.GLMUtil;
@@ -8,8 +9,6 @@ import xenoframium.glmath.util.GLMUtil;
 public class Mat4 {
 
 	private static final float[][] identity = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-
-	private FloatBuffer buffer = GLMUtil.createDirectFloatBuffer(16);
 	public float[][] m;
 
 	public Mat4() {
@@ -58,6 +57,21 @@ public class Mat4 {
 		}
 		m = temp;
 		return this;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Mat4 mat4 = (Mat4) o;
+
+		return Arrays.deepEquals(m, mat4.m);
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.deepHashCode(m);
 	}
 
 	public float det() {

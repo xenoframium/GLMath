@@ -1,14 +1,13 @@
 package xenoframium.glmath.linearalgebra;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 
 import xenoframium.glmath.util.GLMUtil;
 
 public class Mat3 {
 
 	private static final float[][] identity = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
-
-	private FloatBuffer buffer = GLMUtil.createDirectFloatBuffer(9);
 	public float[][] m;
 
 	public Mat3() {
@@ -87,5 +86,20 @@ public class Mat3 {
 			}
 		}
 		return res;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Mat3 mat3 = (Mat3) o;
+
+		return Arrays.deepEquals(m, mat3.m);
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.deepHashCode(m);
 	}
 }

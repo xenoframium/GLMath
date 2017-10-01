@@ -9,8 +9,6 @@ public class Vec2 {
 	public float x;
 	public float y;
 
-	private FloatBuffer buffer = GLMUtil.createDirectFloatBuffer(2);
-
 	public Vec2(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -71,7 +69,25 @@ public class Vec2 {
 	public Vec2 normalize() {
 		return div(mag());
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Vec2 vec2 = (Vec2) o;
+
+		if (Float.compare(vec2.x, x) != 0) return false;
+		return Float.compare(vec2.y, y) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+		result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+		return result;
+	}
+
 	public float[] asArr() {
 		return new float[]{x, y};
 	}

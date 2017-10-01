@@ -44,15 +44,57 @@ public class Quat {
 	}
 	
 	public Quat mult(float scalar) {
-		return new Quat(w * scalar, x * scalar, y * scalar, z * scalar);
+		w *= scalar;
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		return this;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Quat quat = (Quat) o;
+
+		if (Float.compare(quat.w, w) != 0) return false;
+		if (Float.compare(quat.x, x) != 0) return false;
+		if (Float.compare(quat.y, y) != 0) return false;
+		return Float.compare(quat.z, z) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (w != +0.0f ? Float.floatToIntBits(w) : 0);
+		result = 31 * result + (x != +0.0f ? Float.floatToIntBits(x) : 0);
+		result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+		result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+		return result;
+	}
+
+	public Quat mult(Quat r) {
+		float ax = r.x*x - r.y*y - r.z*z - r.w*w;
+		float ay = r.x*y + r.y*x - r.z*w + r.w*z;
+		float az = r.x*z + r.y*w + r.z*x - r.w*y;
+		float aw = r.x*w - r.y*z + r.z*y + r.w*x;
+		x=ax;
+		y=ay;
+		z=az;
+		w=aw;
+		return this;
 	}
 
 	public Quat normalize() {
-		return mult(1 / this.mag());
+		mult(1 / this.mag());
+		return this;
 	}
 
 	public Quat conj() {
-		return new Quat(w, -x, -y, -z);
+		x = -x;
+		y = -y;
+		z = -z;
+		return this;
 	}
 
 	public Mat4 toRotMat() {

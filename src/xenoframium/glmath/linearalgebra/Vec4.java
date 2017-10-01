@@ -5,8 +5,6 @@ import java.nio.FloatBuffer;
 import xenoframium.glmath.util.GLMUtil;
 
 public class Vec4 {
-
-	private FloatBuffer buffer = GLMUtil.createDirectFloatBuffer(4);
 	public float x;
 	public float y;
 	public float z;
@@ -36,13 +34,28 @@ public class Vec4 {
 	public float dot(Vec4 vec) {
 		return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
 	}
-	
-	public Vec4 add(Vec4 vec) {
-		return new Vec4(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
+
+	public Vec4 add(Vec4... vecs) {
+		float xx=x, yy=y, zz=z, ww=w;
+		for (Vec4 vec : vecs) {
+			xx+=vec.x;
+			yy+=vec.y;
+			zz+=vec.z;
+			ww+=vec.w;
+		}
+		this.x = xx;
+		this.y = yy;
+		this.z = zz;
+		this.w = ww;
+		return this;
 	}
 	
 	public Vec4 subt(Vec4 vec) {
-		return new Vec4(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
+		x-=vec.x;
+		y-=vec.y;
+		z-=vec.z;
+		w-=vec.w;
+		return this;
 	}
 	
 	public float mag() {
@@ -56,14 +69,41 @@ public class Vec4 {
 	public Vec4 mult(float scalar) {
 		return new Vec4(x * scalar, y * scalar, z * scalar, w * scalar);
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Vec4 vec4 = (Vec4) o;
+
+		if (Float.compare(vec4.x, x) != 0) return false;
+		if (Float.compare(vec4.y, y) != 0) return false;
+		if (Float.compare(vec4.z, z) != 0) return false;
+		return Float.compare(vec4.w, w) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+		result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+		result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+		result = 31 * result + (w != +0.0f ? Float.floatToIntBits(w) : 0);
+		return result;
+	}
+
 	public Vec4 div(float scalar) {
 		float inverseDenom = 1 / scalar;
-		return new Vec4(x * inverseDenom, y * inverseDenom, z * inverseDenom, w * inverseDenom);
+		x*=inverseDenom;
+		y*=inverseDenom;
+		z*=inverseDenom;
+		w*=inverseDenom;
+		return this;
 	}
 	
 	public Vec4 normalize() {
-		return div(mag());
+	    div(mag());
+	    return this;
 	}
 	
 	public float[] asArr() {

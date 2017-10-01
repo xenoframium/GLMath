@@ -1,6 +1,9 @@
 package xenoframium.glmath;
 
 import xenoframium.glmath.linearalgebra.*;
+import xenoframium.glmath.quaternion.Quat;
+
+import java.util.Vector;
 
 public final class GLM {
 	public static float epsilon = 1e-5f;
@@ -16,20 +19,20 @@ public final class GLM {
 	}
 
 	public static Line3 lineFromPoints(Vec3 point1, Vec3 point2) {
-		return new Line3(point1, point1.subt(point2));
+		return new Line3(new Vec3(point1), GLM.subt(point1, point2));
 	}
 
 	public static Plane planeFromTriangle(Triangle triangle) {
-		Vec3 normal = triangle.b.subt(triangle.a).cross(triangle.c.subt(triangle.b));
+		Vec3 normal = GLM.cross(GLM.subt(triangle.b, triangle.a), GLM.subt(triangle.c, triangle.b));
 		return new Plane(normal, triangle.a);
 	}
 
 	public static boolean isPointInTriangle(Triangle triangle, Vec3 point) {
-		Vec3 v0 = triangle.b.subt(triangle.a);
-		Vec3 v1 = triangle.c.subt(triangle.a);
-		Vec3 v2 = point.subt(triangle.a);
+		Vec3 v0 = GLM.subt(triangle.b, triangle.a);
+		Vec3 v1 = GLM.subt(triangle.c, triangle.a);
+		Vec3 v2 = GLM.subt(point, triangle.a);
 
-		if (v2.dot(v0.cross(v1)) > epsilon) {
+		if (v2.dot(GLM.cross(v0, v1)) > epsilon) {
 			return false;
 		}
 
@@ -82,10 +85,10 @@ public final class GLM {
 	}
 
 	public static Mat4 cameraLookAt(Vec3 cameraPos, Vec3 viewTarget, Vec3 up) {
-		Vec3 viewDirection = new Vec3(viewTarget).subt(cameraPos).normalize();
-		Vec3 upDirection = new Vec3(up).normalize();
-		Vec3 rightDirection = new Vec3(viewDirection).cross(upDirection).normalize();
-		upDirection = new Vec3(rightDirection).cross(viewDirection);
+		Vec3 viewDirection = GLM.normalize(GLM.subt(viewTarget, cameraPos));
+		Vec3 upDirection = GLM.normalize(up);
+		Vec3 rightDirection = GLM.normalize(GLM.cross(viewDirection, upDirection));
+		upDirection = GLM.cross(rightDirection, viewDirection);
 
 		Mat4 viewMatrix = new Mat4();
 
@@ -106,6 +109,18 @@ public final class GLM {
 		viewMatrix.m[3][2] = viewDirection.dot(cameraPos);
 
 		return viewMatrix;
+	}
+
+	public static Mat2 mult(float s, Mat2 m) {
+		return new Mat2(m).mult(s);
+	}
+
+	public static Mat3 mult(float s, Mat3 m) {
+		return new Mat3(m).mult(s);
+	}
+
+	public static Mat4 mult(float s, Mat4 m) {
+		return new Mat4(m).mult(s);
 	}
 
 	public static Mat2 mult(Mat2... mats) {
@@ -151,5 +166,85 @@ public final class GLM {
 		res.m[3][3] = 0;
 		res.add(mats);
 		return res;
+	}
+
+	public static Vec2 sum(Vec2... vecs) {
+		return new Vec2(0, 0).add(vecs);
+	}
+
+	public static Vec3 sum(Vec3... vecs) {
+		return new Vec3(0, 0, 0).add(vecs);
+	}
+
+	public static Vec4 sum(Vec4... vecs) {
+	    return new Vec4(0, 0, 0 ,0).add(vecs);
+	}
+
+	public static Vec2 subt(Vec2 v1, Vec2 v2) {
+		return new Vec2(v1).subt(v2);
+	}
+
+	public static Vec3 subt(Vec3 v1, Vec3 v2) {
+		return new Vec3(v1).subt(v2);
+	}
+
+	public static Vec4 subt(Vec4 v1, Vec4 v2) {
+		return new Vec4(v1).subt(v2);
+	}
+
+	public static Vec2 mult(float s, Vec2 v2) {
+		return new Vec2(v2).mult(s);
+	}
+
+	public static Vec3 mult(float s, Vec3 v2) {
+		return new Vec3(v2).mult(s);
+	}
+
+	public static Vec4 mult(float s, Vec4 v2) {
+		return new Vec4(v2).mult(s);
+	}
+
+	public static Vec2 div(float s, Vec2 v2) {
+		return new Vec2(v2).div(s);
+	}
+
+	public static Vec3 div(float s, Vec3 v2) {
+		return new Vec3(v2).div(s);
+	}
+
+	public static Vec4 div(float s, Vec4 v2) {
+		return new Vec4(v2).div(s);
+	}
+
+	public static Vec3 cross(Vec3 v1, Vec3 v2) {
+		return new Vec3(v1).cross(v2);
+	}
+
+	public static Vec2 normalize(Vec2 v) {
+		return new Vec2(v).normalize();
+	}
+
+	public static Vec3 normalize(Vec3 v) {
+		return new Vec3(v).normalize();
+	}
+
+	public static Vec4 normalize(Vec4 v) {
+		return new Vec4(v).normalize();
+	}
+
+	public static Quat normalize(Quat q) {
+		return new Quat(q).normalize();
+	}
+
+	public static Quat conj(Quat q) {
+		return new Quat(q).conj();
+	}
+
+	public static Quat mult(float s, Quat q) {
+		return new Quat(q).mult(s);
+	}
+
+	public static Quat mult(Quat q1, Quat q2) {
+		return new Quat(q1).mult(q2);
 	}
 }
