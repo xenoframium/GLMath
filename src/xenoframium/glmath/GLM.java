@@ -19,11 +19,11 @@ public final class GLM {
 	}
 
 	public static Line3 lineFromPoints(Vec3 point1, Vec3 point2) {
-		return new Line3(new Vec3(point1), GLM.subt(point1, point2));
+		return new Line3(point1, GLM.subt(point1, point2));
 	}
 
 	public static Plane planeFromTriangle(Triangle triangle) {
-		Vec3 normal = GLM.cross(GLM.subt(triangle.b, triangle.a), GLM.subt(triangle.c, triangle.b));
+		Vec3 normal = GLM.cross(GLM.subt(triangle.b, triangle.a), GLM.subt(triangle.c, triangle.a));
 		return new Plane(normal, triangle.a);
 	}
 
